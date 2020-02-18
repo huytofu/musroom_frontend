@@ -21,12 +21,12 @@ export function getCurrentPrediction(data, callback) {
 }
 
 export function getHistoricalPredictions(data, callback) {
-    let {num_class} = data;
-    if(num_class){
+    let {num_last} = data;
+    if(num_last){
         try{
             $.ajax({
                 method: "GET",
-                url: 'http://localhost:4000/prediction/get-historical-predictions',
+                url: 'http://localhost:4000/prediction/get-mushroom-historical-predictions',
                 dataType: "json",
                 data: data,
                 success: callback

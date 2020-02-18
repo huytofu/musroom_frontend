@@ -1,19 +1,10 @@
 import React from 'react';
-// import ReactTable from 'react-table';
-// import PropTypes from 'prop-types';
-// import { withRouter } from 'react-router-dom';
-// import { connect } from 'react-redux';
-// import { general, api, date, h } from '../../helpers/index';
-// import * as ValidationHelper from "../../helpers/validate";
-// import { config } from '../../configs/config';
-// import {helpers} from '../../helpers';
-// import moment from 'moment';
 import * as apiHelper from '../helpers/api'
 import * as generalHelper from '../helpers/general'
 import * as PredictionModel from '../models/prediction';
 import * as propertyChoices from '../constants/choices';
-import {FormControl, NativeSelect, FormHelperText} from '@material-ui/core'
-import { Container, Row, Col } from 'reactstrap'
+import { Container, Row, Col } from 'reactstrap';
+import MySelectForm from './MySelectForm';
 
 // const useStyles = makeStyles(theme => ({
 //   formControl: {
@@ -25,32 +16,9 @@ import { Container, Row, Col } from 'reactstrap'
 //   },
 // }));
 
-class MySelectForm extends React.Component {
-    render(){
-        let {handleChange, data, options, property, self} = this.props;
-        let display_options = options.map(option=>{
-            return (<option value={option.value}>{option.text}</option>)
-        });
-        return(
-            <FormControl style={{margin: 5, padding: 5, width: '100%', borderColor: 'black'}}>
-                <NativeSelect
-                  value={data}
-                  onChange={handleChange.bind(self, property)}
-                  name={property}
-                  inputProps={{ 'aria-label': property }}>
-                  {display_options}
-                </NativeSelect>
-                <FormHelperText>Select value for {property}</FormHelperText>
-            </FormControl>
-        )
-    }
-}
-
 class PredictionIndex extends React.Component {
-
     constructor (props) {
         super(props);
-        let validations = {};
         // validations['session_unq_email'] = (email)=>{
         //   if(email) {
         //     if(!ValidationHelper.validateEmail(email)) {
@@ -60,7 +28,6 @@ class PredictionIndex extends React.Component {
         // };
         this.state = {
             ...this.state,
-            validations,
             mushroom_data: {
               'cap-shape': {value: '0'},
               'cap-surface': {value: '0'},
@@ -84,50 +51,59 @@ class PredictionIndex extends React.Component {
               'population': {value: '0'},
               'habitat': {value: '0'},
             },
-            last_num: {value: 1},
-            historicalPredictions: [],
             currentPrediction: null
         }
     }
     
     onSubmitPropertiesForPrediction(){
+        let self = this;
         let {mushroom_data} = this.state;
         PredictionModel.getCurrentPrediction({mushroom_data: mushroom_data}, (response)=>{
             const apiRes = apiHelper.handleApiResponse(response, true);
-            this.setState({currentPrediction: apiRes.data.label})
-            generalHelper.alert(`Your label is ${apiRes.data.label}`)
+            let label = apiRes.data.label.replace('\n','');
+            if(label){
+                self.setState({currentPrediction: label})
+                generalHelper.alert(`Your mushroom label is ${label}`)
+            }
         });
     }
     
-    onSubmitGetHistoricalPrediction(){
-        let {num_last} = this.state;
-        PredictionModel.getHistoricalPredictions({last_num: num_last}, (response)=>{
-            const apiRes = apiHelper.handleApiResponse(response, true);
-            this.setState({historicalPredictions: apiRes.data.predictions})
-        });
-    }
-    
-    handleChange(key, e, b, c){
+    handleChange(key, e){
         e.persist();
         let {mushroom_data} = this.state;
         mushroom_data[key] = {value: e.target.value};
         this.setState({mushroom_data: mushroom_data})
     }
     
+    showPrediction(currentPred){
+        switch(currentPred.toLowerCase()){
+          case 'edible':
+              return(
+                  <h2 style={{textAlign: 'center'}}><em>Yay! It is edible!</em></h2>
+              )
+              break
+          default:
+              return(
+                  <h2 style={{textAlign: 'center'}}><em>Oh no! It is poisonous!</em></h2>
+              )
+        }
+    }
+    
     render(){
       let selections = [];
       let self = this;
+      let {currentPrediction} = this.state;
       for(let key in propertyChoices){
           selections.push(
               <Col xs={4} style={{width: '100%'}}>
-              <MySelectForm
-                  handleChange = {this.handleChange}
-                  data={this.state.mushroom_data[key].value}
-                  options={propertyChoices[key]}
-                  property={key}
-                  className="container-fluid text-center"
-                  self={self}
-              />
+                  <MySelectForm
+                      handleChange = {this.handleChange}
+                      data={this.state.mushroom_data[key].value}
+                      options={propertyChoices[key]}
+                      property={key}
+                      className="container-fluid text-center"
+                      self={self}
+                  />
               </Col>
           );
       }
@@ -141,13 +117,14 @@ class PredictionIndex extends React.Component {
               </Row>
               <br/>
               <div style={{textAlign:'center'}}>
-              <button 
-                onClick={this.onSubmitPropertiesForPrediction.bind(self)}
-                onSubmit={this.onSubmitPropertiesForPrediction.bind(self)}
-                className='btn btn-primary'>
-                    <b>Submit</b>
-              </button>
+                  <button 
+                    onClick={this.onSubmitPropertiesForPrediction.bind(self)}
+                    className='btn btn-primary'>
+                        <b>Submit</b>
+                  </button>
               </div>
+              <br/>
+              {currentPrediction && this.showPrediction(currentPrediction)}
           </Container>
       )
     }

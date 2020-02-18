@@ -1,4 +1,5 @@
 import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 let user_current_alert = null;
 
 export function alert(message, type) {
@@ -9,7 +10,11 @@ export function alert(message, type) {
         type = type || 'success';
         toast.success(message, {
             type: type,
-            className: 'toast-' + type
+            autoClose: 4000,
+            position: toast.POSITION.TOP_CENTER,
+            className: 'toast-' + type,
+            fontSize: '60px',
+            closeOnClick: true
         });
         user_current_alert = {message, type};
     }
@@ -17,8 +22,8 @@ export function alert(message, type) {
 
 export function isEmpty(value){
     if (
-      typeof(value) === 'undefined' ||
-      typeof(value) === 'null' || 
+      typeof(value) === typeof(undefined) ||
+      typeof(value) === typeof(null) || 
       value === ''
     ) { return true; }
     return false;
