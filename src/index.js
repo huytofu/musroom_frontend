@@ -1,11 +1,14 @@
 import React from 'react';
+import background from './images/mushroom.png';
 import ReactDOM from 'react-dom';
 import './index.css';
 import Index from './components/Index';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
-  <Index />, 
+  <div className='containerMaster' styles={{ backgroundImage:`url(${background})` }}>
+    <Index/>
+  </div>,
   document.getElementById('root')
 );
 

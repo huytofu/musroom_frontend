@@ -9,5 +9,16 @@ body {
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  monospace;
+}
+
+.containerMaster{
+  background-image: url(./images/mushroom.png);
+}
+
+.container-fluid{
+  height: '100%'; 
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 20px;
 }

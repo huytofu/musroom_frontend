@@ -1,4 +1,6 @@
 import React from 'react';
+import ReactTable from 'react-table-v6';
+import 'react-table-v6/react-table.css'
 import * as apiHelper from '../helpers/api'
 import * as generalHelper from '../helpers/general'
 import * as PredictionModel from '../models/prediction';
@@ -11,7 +13,7 @@ class HistoricalPredictionsIndex extends React.Component {
         this.state = {
           ...this.state,
           num_last: {value: 1},
-          historicalPredictions: [],
+          historicalPredictions: null,
         }
     }
     
@@ -40,14 +42,54 @@ class HistoricalPredictionsIndex extends React.Component {
     }
     
     showHistoricalPredictions(predictions){
-        let items = predictions.map(prediction=>{
-            return(
-                <li type={1}>Type: <b>{prediction[0].toUpperCase()}</b> - Made at timestamp: {prediction[1]}
-                    <br/>
-                </li>
-            )
+        console.log(predictions)
+        let new_preds = predictions.map((prediction, idx)=>{
+            return {index: idx, type: prediction[0], timestamp: prediction[1]}
         })
-        return items
+        console.log(new_preds)
+        let tableColumns = [
+          {
+              Header: 'Index',
+              accessor: 'index',
+              Cell: ({original}) => { return original.index+1|| '' }
+          },
+          {
+              Header: 'Type',
+              accessor: 'type',
+              Cell: ({original}) => { return original.type|| '' }
+          },
+          {
+              Header: 'Made At Timestamp',
+              accessor: 'made_at_timestamp',
+              Cell: ({original}) => { return original.timestamp|| '' }
+          }
+        ];
+        return(
+            <div className="row justify-content-center">
+                <div className="text-center">
+                    <ReactTable
+                      columns={tableColumns}
+                      defaultSorted={[
+                          {
+                              id: 'made_at_timestamp',
+                              desc: false
+                          }
+                      ]}
+                      filterable={true}
+                      defaultFilterMethod={(filter, row, column) => {
+                          const id = filter.pivotId || filter.id
+                          return row[id] !== undefined ? (String(row[id]).toLowerCase()).indexOf(filter.value.toLowerCase()) > -1 : true
+                      }}
+                      defaultPageSize={new_preds.length>5 ? 10 : 5}
+                      pageSizeOptions = {[5,10,15,20,25,30,35,40,45,50]}
+                      showPagination = {true}
+                      className="-striped -highlight"
+                      style={{width: 800}}
+                      data={new_preds}
+                    />
+                </div>
+            </div>
+        )    
     }
     
     render(){
@@ -56,7 +98,7 @@ class HistoricalPredictionsIndex extends React.Component {
         let num_list = Array.from({length:50},(v,k)=>k+1);
         let choices = num_list.map(num=>{return {text: num.toString(), value: num}});
         return(
-          <Container style={{marginTop: 20}}>
+          <Container style={{ marginTop: 20, backgroundColor: 'white', padding: 10}}>
               <h1 className='text-center'>Retrieve your last few predictions here!</h1>
               <br/>
               <Row>
@@ -67,7 +109,7 @@ class HistoricalPredictionsIndex extends React.Component {
                           data={this.state.num_last.value}
                           options={choices}
                           property='num_last'
-                          className="container-fluid text-center"
+                          className="text-center"
                           self={self}
                       />
                   </Col>
@@ -81,9 +123,7 @@ class HistoricalPredictionsIndex extends React.Component {
                   </button>
               </div>
               <br/>
-              <ul>
-                  {historicalPredictions && this.showHistoricalPredictions(historicalPredictions)}
-              </ul>
+              {historicalPredictions && this.showHistoricalPredictions(historicalPredictions)}
           </Container>
         )
     }

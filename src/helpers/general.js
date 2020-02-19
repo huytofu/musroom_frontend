@@ -6,7 +6,7 @@ export function alert(message, type) {
     if(!user_current_alert) {
         setTimeout(() => { //Reset after 5 seconds
             user_current_alert = null;
-        }, 4000);
+        }, 3000);
         type = type || 'success';
         toast.success(message, {
             type: type,

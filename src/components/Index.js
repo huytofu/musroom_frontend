@@ -41,7 +41,9 @@ class Index extends React.Component {
       default:
     }
     return(
-      componentsDisplayed                           
+      <div className='container-fluid'>
+        {componentsDisplayed}
+      </div>
     )
   }
 }

@@ -101,14 +101,14 @@ class PredictionIndex extends React.Component {
                       data={this.state.mushroom_data[key].value}
                       options={propertyChoices[key]}
                       property={key}
-                      className="container-fluid text-center"
+                      className="text-center"
                       self={self}
                   />
               </Col>
           );
       }
       return (
-          <Container style={{marginTop: 20}}>
+          <Container style={{ marginTop: 20, backgroundColor: 'white', padding: 10}}>
               <h1 className='text-center'>Welcome to Mushroom Edibility Prediction Challenge!</h1>
               <br/>
               <h3 className='text-center'>Please select the musroom's properties</h3>
