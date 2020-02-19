@@ -42,11 +42,9 @@ class HistoricalPredictionsIndex extends React.Component {
     }
     
     showHistoricalPredictions(predictions){
-        console.log(predictions)
         let new_preds = predictions.map((prediction, idx)=>{
             return {index: idx, type: prediction[0], timestamp: prediction[1]}
         })
-        console.log(new_preds)
         let tableColumns = [
           {
               Header: 'Index',
