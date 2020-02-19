@@ -81,7 +81,6 @@ class PredictionIndex extends React.Component {
               return(
                   <h2 style={{textAlign: 'center'}}><em>Yay! It is edible!</em></h2>
               )
-              break
           default:
               return(
                   <h2 style={{textAlign: 'center'}}><em>Oh no! It is poisonous!</em></h2>

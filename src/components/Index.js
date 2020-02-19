@@ -2,7 +2,6 @@ import React from 'react';
 import Header from './Header';
 import PredictionIndex from './PredictionIndex';
 import HistoricalPredictionsIndex from './HistoricalPredictionsIndex';
-import * as apiHelper from '../helpers/api'
 import history from '../helpers/history'
 import {toast} from 'react-toastify';
 toast.configure()

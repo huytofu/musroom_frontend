@@ -1,5 +1,3 @@
-import React from 'react';
-import $ from 'jquery';
 import * as generalHelper from './general';
 
 export function handleApiResponse (response, showMessage) {
