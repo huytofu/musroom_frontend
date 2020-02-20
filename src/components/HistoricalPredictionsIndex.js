@@ -25,7 +25,7 @@ class HistoricalPredictionsIndex extends React.Component {
             let predictions = apiRes.data.predictions;
             if(predictions){
                 self.setState({historicalPredictions: predictions})
-                let message_to_show = `Your last ${predictions.length} is/are shown below`;
+                let message_to_show = `Your last ${predictions.length} prediction(s) is/are shown below`;
                 if(predictions.length < parseInt(num_last.value)){
                     message_to_show = `You have made fewer than ${num_last.value} predictions. `+message_to_show
                 }
